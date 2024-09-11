@@ -41,7 +41,7 @@ app.post("/proxy/chat", (req, res) => {
     return res.status(400).json({
       error: "Bad Request",
       message: [
-        "messageList must be an array",
+        "messageList must be an array1",
         "apiKey must be a string",
         "applicationId must be a number conforming to the specified constraints",
       ],
