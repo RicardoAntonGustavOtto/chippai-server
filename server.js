@@ -27,10 +27,6 @@ app.use(bodyParser.json());
 // Set CORS headers to allow requests from any origin
 app.use(cors());
 app.post("/proxy/chat", (req, res) => {
-  // Set CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*"); // You can specify your frontend's domain instead of *
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
@@ -73,6 +69,6 @@ app.post("/proxy/chat", (req, res) => {
   );
 });
 
-app.listen(3000, () => {
-  console.log("Proxy server running on port 3000");
+app.listen(3008, () => {
+  console.log("Proxy server running on port 3008");
 });
