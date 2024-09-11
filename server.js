@@ -27,6 +27,10 @@ app.use(bodyParser.json());
 // Set CORS headers to allow requests from any origin
 app.use(cors());
 app.post("/proxy/chat", (req, res) => {
+  res.set(
+    "Access-Control-Allow-Origin",
+    "https://cheery-froyo-1807de.netlify.app"
+  );
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
