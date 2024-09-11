@@ -4,6 +4,7 @@ const express = require("express");
 const request = require("request");
 const bodyParser = require("body-parser");
 const app = express();
+const cors = require("cors");
 
 const CHIPPS = [
   {
@@ -24,15 +25,7 @@ const CHIPPS = [
 app.use(bodyParser.json());
 
 // Set CORS headers to allow requests from any origin
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-
+app.use(cors());
 app.post("/proxy/chat", (req, res) => {
   // Set CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*"); // You can specify your frontend's domain instead of *
