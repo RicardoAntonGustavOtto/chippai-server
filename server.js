@@ -34,6 +34,10 @@ app.use((req, res, next) => {
 });
 
 app.post("/proxy/chat", (req, res) => {
+  // Set CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*"); // You can specify your frontend's domain instead of *
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
