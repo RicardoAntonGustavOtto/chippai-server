@@ -47,11 +47,11 @@ app.use(
 );
 
 app.post("/proxy/chat", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*"); // Or specify your allowed origin
+  res.setHeader("Access-Control-Allow-Origin", "https://howtoai.tech"); // Or specify your allowed origin
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "X-Requested-With, Content-Type"
+    "X-Requested-With, Content-Type, Origin, Accept"
   );
 
   if (req.method === "OPTIONS") {
