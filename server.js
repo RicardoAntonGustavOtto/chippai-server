@@ -42,16 +42,16 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
     credentials: true,
-    optionsSuccessStatus: 204,
+    optionsSuccessStatus: 200, // Changed from 204 to 200
   })
 );
 
+app.options("/proxy/chat", (req, res) => {
+  // Handle preflight request
+  res.status(200).end();
+});
+
 app.post("/proxy/chat", (req, res) => {
-  if (req.method === "OPTIONS") {
-    // Handle preflight request
-    res.status(200).end();
-    return;
-  }
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
