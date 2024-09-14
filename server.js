@@ -4,7 +4,6 @@ const express = require("express");
 const request = require("request");
 const bodyParser = require("body-parser");
 const app = express();
-const cors = require("cors");
 
 const CHIPPS = [
   {
@@ -62,7 +61,7 @@ app.post("/proxy/chat", (req, res) => {
         return res.status(500).send("Server Error");
       }
 
-      res.status(response.statusCode).json(body);
+      res.status(200).json(body);
     }
   );
 });
