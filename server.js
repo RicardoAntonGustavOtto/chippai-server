@@ -3,9 +3,8 @@
 const express = require("express");
 const request = require("request");
 const bodyParser = require("body-parser");
-const cors = require("cors");
-
 const app = express();
+const cors = require("cors");
 
 const CHIPPS = [
   {
@@ -25,6 +24,8 @@ const CHIPPS = [
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
+// Set CORS headers to allow requests from any origin
+
 // List of allowed origins
 const allowedOrigins = [
   "https://howtoai.tech",
@@ -35,63 +36,62 @@ const allowedOrigins = [
   "http://howtotech.ai",
 ];
 
-// Configure CORS
 app.use(
   cors({
     origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
     credentials: true,
+    optionsSuccessStatus: 204,
   })
 );
 
-// Handle OPTIONS requests
-app.options("/proxy/chat", (req, res) => {
-  res.status(200).end();
-});
-
 app.post("/proxy/chat", (req, res) => {
-  return res.status(200).send("OK");
-  // const { number, messageList } = req.body;
+  if (req.method === "OPTIONS") {
+    // Handle preflight request
+    res.status(200).end();
+    return;
+  }
+  const { number, messageList } = req.body;
 
-  // const applicationId = CHIPPS[number].applicationId;
-  // const apiKey = CHIPPS[number].apiKey;
+  const applicationId = CHIPPS[number].applicationId;
+  const apiKey = CHIPPS[number].apiKey;
+  // Validate the incoming request body
+  console.log(req.body);
+  if (
+    typeof applicationId !== "number" ||
+    typeof apiKey !== "string" ||
+    !Array.isArray(messageList)
+  ) {
+    return res.status(400).json({
+      error: "Bad Request",
+      message: [
+        "messageList must be an array1",
+        "apiKey must be a string",
+        "applicationId must be a number conforming to the specified constraints",
+      ],
+      statusCode: 400,
+    });
+  }
+  console.log(applicationId, apiKey, messageList);
+  // Forward the request to the external API
+  request.post(
+    {
+      url: "https://api.chipp.ai/chat",
+      json: {
+        applicationId,
+        apiKey,
+        messageList,
+      },
+    },
+    (error, response, body) => {
+      if (error) {
+        return res.status(500).send("Server Error");
+      }
 
-  // // Validate the incoming request body
-  // if (
-  //   typeof applicationId !== "number" ||
-  //   typeof apiKey !== "string" ||
-  //   !Array.isArray(messageList)
-  // ) {
-  //   return res.status(400).json({
-  //     error: "Bad Request",
-  //     message: [
-  //       "messageList must be an array",
-  //       "apiKey must be a string",
-  //       "applicationId must be a number conforming to the specified constraints",
-  //     ],
-  //     statusCode: 400,
-  //   });
-  // }
-
-  // // Forward the request to the external API
-  // request.post(
-  //   {
-  //     url: "https://api.chipp.ai/chat",
-  //     json: {
-  //       applicationId,
-  //       apiKey,
-  //       messageList,
-  //     },
-  //   },
-  //   (error, response, body) => {
-  //     if (error) {
-  //       return res.status(500).send("Server Error");
-  //     }
-
-  //     res.status(response.statusCode).json(body);
-  //   }
-  // );
+      res.status(response.statusCode).json(body);
+    }
+  );
 });
 
 app.listen(3008, () => {
