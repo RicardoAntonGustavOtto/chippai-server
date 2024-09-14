@@ -55,7 +55,18 @@ app.use(
 );
 
 app.post("/proxy/chat", (req, res) => {
-  res.set("Access-Control-Allow-Origin", "https://howtoai.tech");
+  res.setHeader("Access-Control-Allow-Origin", "*"); // Or specify your allowed origin
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With, Content-Type"
+  );
+
+  if (req.method === "OPTIONS") {
+    // Handle preflight request
+    res.status(200).end();
+    return;
+  }
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
