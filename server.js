@@ -53,6 +53,8 @@ app.use(
     optionsSuccessStatus: 204,
   })
 );
+app.options("*", cors()); // include before other routes
+app.options("/proxy/chat", cors()); // include before other routes
 
 app.post("/proxy/chat", (req, res) => {
   res.set("Access-Control-Allow-Origin", "https://howtoai.tech");
