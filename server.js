@@ -45,6 +45,11 @@ app.use(
   })
 );
 
+// Handle OPTIONS requests
+app.options("/proxy/chat", (req, res) => {
+  res.status(200).end();
+});
+
 app.post("/proxy/chat", (req, res) => {
   return res.status(200).send("OK");
   // const { number, messageList } = req.body;
@@ -85,8 +90,8 @@ app.post("/proxy/chat", (req, res) => {
   //     }
 
   //     res.status(response.statusCode).json(body);
-    }
-  );
+  //   }
+  // );
 });
 
 app.listen(3008, () => {
