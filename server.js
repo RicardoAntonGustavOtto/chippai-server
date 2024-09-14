@@ -3,6 +3,7 @@
 const express = require("express");
 const request = require("request");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
 
 const CHIPPS = [
@@ -23,23 +24,18 @@ const CHIPPS = [
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
+// CORS configuration
+const corsOptions = {
+  origin: ["https://howtoai.tech", "https://cheery-froyo-1807de.netlify.app"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+
 app.post("/proxy/chat", (req, res) => {
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  res.setHeader("Access-Control-Allow-Origin", "https://howtoai.tech");
-  // another common pattern
-  // res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET,OPTIONS,PATCH,DELETE,POST,PUT"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
-  );
-  if (req.method === "OPTIONS") {
-    res.status(200).end();
-    return;
-  }
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
@@ -77,7 +73,7 @@ app.post("/proxy/chat", (req, res) => {
         return res.status(500).send("Server Error");
       }
 
-      res.status(200).json(body);
+      res.status(response.statusCode).json(body);
     }
   );
 });
