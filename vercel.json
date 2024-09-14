@@ -12,7 +12,7 @@
       "dest": "/proxy/:path*",
       "methods": ["GET", "POST", "PUT", "DELETE"],
       "headers": {
-        "Access-Control-Allow-Origin": "https://cheery-froyo-1807de.netlify.app/"
+        "Access-Control-Allow-Origin": "https://howtoai.tech/"
       }
     }
   ]
