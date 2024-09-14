@@ -46,44 +46,45 @@ app.use(
 );
 
 app.post("/proxy/chat", (req, res) => {
-  const { number, messageList } = req.body;
+  return res.status(200).send("OK");
+  // const { number, messageList } = req.body;
 
-  const applicationId = CHIPPS[number].applicationId;
-  const apiKey = CHIPPS[number].apiKey;
+  // const applicationId = CHIPPS[number].applicationId;
+  // const apiKey = CHIPPS[number].apiKey;
 
-  // Validate the incoming request body
-  if (
-    typeof applicationId !== "number" ||
-    typeof apiKey !== "string" ||
-    !Array.isArray(messageList)
-  ) {
-    return res.status(400).json({
-      error: "Bad Request",
-      message: [
-        "messageList must be an array",
-        "apiKey must be a string",
-        "applicationId must be a number conforming to the specified constraints",
-      ],
-      statusCode: 400,
-    });
-  }
+  // // Validate the incoming request body
+  // if (
+  //   typeof applicationId !== "number" ||
+  //   typeof apiKey !== "string" ||
+  //   !Array.isArray(messageList)
+  // ) {
+  //   return res.status(400).json({
+  //     error: "Bad Request",
+  //     message: [
+  //       "messageList must be an array",
+  //       "apiKey must be a string",
+  //       "applicationId must be a number conforming to the specified constraints",
+  //     ],
+  //     statusCode: 400,
+  //   });
+  // }
 
-  // Forward the request to the external API
-  request.post(
-    {
-      url: "https://api.chipp.ai/chat",
-      json: {
-        applicationId,
-        apiKey,
-        messageList,
-      },
-    },
-    (error, response, body) => {
-      if (error) {
-        return res.status(500).send("Server Error");
-      }
+  // // Forward the request to the external API
+  // request.post(
+  //   {
+  //     url: "https://api.chipp.ai/chat",
+  //     json: {
+  //       applicationId,
+  //       apiKey,
+  //       messageList,
+  //     },
+  //   },
+  //   (error, response, body) => {
+  //     if (error) {
+  //       return res.status(500).send("Server Error");
+  //     }
 
-      res.status(response.statusCode).json(body);
+  //     res.status(response.statusCode).json(body);
     }
   );
 });
