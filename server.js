@@ -24,38 +24,10 @@ const CHIPPS = [
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-// List of allowed origins
-const allowedOrigins = [
-  "https://howtoai.tech",
-  "https://cheery-froyo-1807de.netlify.app",
-  "https://howtoai.tech/tools/free-batch-generation-of-pictures-and-text",
-  "http://localhost:3000",
-  "http://localhost:5173",
-  "http://howtotech.ai",
-];
-
-// CORS configuration
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-    optionsSuccessStatus: 204,
-  })
-);
-
-// Preflight request handler
-app.options("/proxy/chat", cors());
-
-app.post("/proxy/chat", cors(), (req, res) => {
+// Set CORS headers to allow requests from any origin
+app.use(cors());
+app.post("/proxy/chat", (req, res) => {
+  res.set("Access-Control-Allow-Origin", "https://howtoai.tech");
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
@@ -70,7 +42,7 @@ app.post("/proxy/chat", cors(), (req, res) => {
     return res.status(400).json({
       error: "Bad Request",
       message: [
-        "messageList must be an array",
+        "messageList must be an array1",
         "apiKey must be a string",
         "applicationId must be a number conforming to the specified constraints",
       ],
