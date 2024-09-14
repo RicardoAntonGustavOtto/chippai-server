@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 
 // CORS configuration
 const corsOptions = {
-  origin: "*",
+  origin: "https://howtoai.tech",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -35,7 +35,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.post("/proxy/chat", (req, res) => {
+// Pre-flight request handler
+app.options("*", cors(corsOptions));
+
+app.post("/proxy/chat", cors(corsOptions), (req, res) => {
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
