@@ -24,8 +24,6 @@ const CHIPPS = [
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-// Set CORS headers to allow requests from any origin
-
 // List of allowed origins
 const allowedOrigins = [
   "https://howtoai.tech",
@@ -36,28 +34,27 @@ const allowedOrigins = [
   "http://howtotech.ai",
 ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
+// CORS configuration
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 200, // Changed from 204 to 200
+};
 
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-    optionsSuccessStatus: 204,
-  })
-);
-app.options("*", cors()); // include before other routes
-app.options("/proxy/chat", cors()); // include before other routes
+app.use(cors(corsOptions));
 
-app.post("/proxy/chat", (req, res) => {
-  res.set("Access-Control-Allow-Origin", "https://howtoai.tech");
+// Handle preflight requests
+app.options("*", cors(corsOptions));
+
+app.post("/proxy/chat", cors(corsOptions), (req, res) => {
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
@@ -72,7 +69,7 @@ app.post("/proxy/chat", (req, res) => {
     return res.status(400).json({
       error: "Bad Request",
       message: [
-        "messageList must be an array1",
+        "messageList must be an array",
         "apiKey must be a string",
         "applicationId must be a number conforming to the specified constraints",
       ],
