@@ -46,15 +46,18 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-  optionsSuccessStatus: 200, // Changed from 204 to 200
+  optionsSuccessStatus: 200,
 };
 
+// Apply CORS middleware to all routes
 app.use(cors(corsOptions));
 
-// Handle preflight requests
-app.options("*", cors(corsOptions));
+// Handle preflight requests explicitly
+app.options("*", (req, res) => {
+  res.sendStatus(200);
+});
 
-app.post("/proxy/chat", cors(corsOptions), (req, res) => {
+app.post("/proxy/chat", (req, res) => {
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
