@@ -24,39 +24,6 @@ const CHIPPS = [
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-// List of allowed origins
-const allowedOrigins = [
-  "https://howtoai.tech",
-  "https://cheery-froyo-1807de.netlify.app",
-  "https://howtoai.tech/tools/free-batch-generation-of-pictures-and-text",
-  "http://localhost:3000",
-  "http://localhost:5137",
-  "http://howtotech.ai",
-];
-
-// CORS configuration
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
-
-// Apply CORS middleware to all routes
-app.use(cors(corsOptions));
-
-// Handle preflight requests explicitly
-app.options("*", (req, res) => {
-  res.sendStatus(200);
-});
-
 app.post("/proxy/chat", (req, res) => {
   const { number, messageList } = req.body;
 
