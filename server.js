@@ -24,8 +24,6 @@ const CHIPPS = [
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-// Set CORS headers to allow requests from any origin
-
 // List of allowed origins
 const allowedOrigins = [
   "https://howtoai.tech",
@@ -36,11 +34,11 @@ const allowedOrigins = [
   "http://howtotech.ai",
 ];
 
+// CORS configuration
 app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
-
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
@@ -54,8 +52,10 @@ app.use(
   })
 );
 
-app.post("/proxy/chat", (req, res) => {
-  res.set("Access-Control-Allow-Origin", "https://howtoai.tech");
+// Preflight request handler
+app.options("/proxy/chat", cors());
+
+app.post("/proxy/chat", cors(), (req, res) => {
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
@@ -70,7 +70,7 @@ app.post("/proxy/chat", (req, res) => {
     return res.status(400).json({
       error: "Bad Request",
       message: [
-        "messageList must be an array1",
+        "messageList must be an array",
         "apiKey must be a string",
         "applicationId must be a number conforming to the specified constraints",
       ],
