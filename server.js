@@ -38,20 +38,24 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-    optionsSuccessStatus: 200, // Changed from 204 to 200
+    optionsSuccessStatus: 204,
   })
 );
 
-app.options("/proxy/chat", (req, res) => {
-  // Handle preflight request
-  res.status(200).end();
-});
-
 app.post("/proxy/chat", (req, res) => {
+  res.set("Access-Control-Allow-Origin", "https://howtoai.tech");
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
