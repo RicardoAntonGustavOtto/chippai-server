@@ -59,10 +59,7 @@ app.options("/proxy/chat", (req, res) => {
 });
 
 app.post("/proxy/chat", (req, res) => {
-  res.set(
-    "Access-Control-Allow-Origin",
-    "https://cheery-froyo-1807de.netlify.app"
-  );
+  res.set("Access-Control-Allow-Origin", "https://howtoai.tech");
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
