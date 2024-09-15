@@ -3,8 +3,8 @@
 const express = require("express");
 const request = require("request");
 const bodyParser = require("body-parser");
-const cors = require("cors");
 const app = express();
+const cors = require("cors");
 
 const CHIPPS = [
   {
@@ -24,21 +24,40 @@ const CHIPPS = [
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-// CORS configuration
-const corsOptions = {
-  origin: "https://howtoai.tech",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
+// Set CORS headers to allow requests from any origin
 
-app.use(cors(corsOptions));
+// List of allowed origins
+const allowedOrigins = [
+  "https://howtoai.tech",
+  "https://cheery-froyo-1807de.netlify.app",
+  "https://howtoai.tech/tools/free-batch-generation-of-pictures-and-text",
+  "http://localhost:3000",
+  "http://howtotech.ai",
+];
 
-// Pre-flight request handler
-app.options("*", cors(corsOptions));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
 
-app.post("/proxy/chat", cors(corsOptions), (req, res) => {
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+    optionsSuccessStatus: 204,
+  })
+);
+
+app.post("/proxy/chat", (req, res) => {
+  res.set(
+    "Access-Control-Allow-Origin",
+    "https://cheery-froyo-1807de.netlify.app"
+  );
   const { number, messageList } = req.body;
 
   const applicationId = CHIPPS[number].applicationId;
@@ -53,7 +72,7 @@ app.post("/proxy/chat", cors(corsOptions), (req, res) => {
     return res.status(400).json({
       error: "Bad Request",
       message: [
-        "messageList must be an array",
+        "messageList must be an array1",
         "apiKey must be a string",
         "applicationId must be a number conforming to the specified constraints",
       ],
