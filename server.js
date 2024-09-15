@@ -53,11 +53,6 @@ app.use(
   })
 );
 
-app.options("/proxy/chat", (req, res) => {
-  res.set("Access-Control-Allow-Origin", "https://howtoai.tech");
-  res.status(204).end();
-});
-
 app.post("/proxy/chat", (req, res) => {
   const { number, messageList } = req.body;
 
