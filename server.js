@@ -53,6 +53,10 @@ app.use(
   })
 );
 
+app.options("/proxy/chat", (req, res) => {
+  res.status(204).end();
+});
+
 app.post("/proxy/chat", (req, res) => {
   const { number, messageList } = req.body;
 
