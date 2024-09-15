@@ -4,7 +4,6 @@ const express = require("express");
 const request = require("request");
 const bodyParser = require("body-parser");
 const app = express();
-const cors = require("cors");
 
 const CHIPPS = [
   {
@@ -23,40 +22,6 @@ const CHIPPS = [
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
-
-// Set CORS headers to allow requests from any origin
-
-// List of allowed origins
-const allowedOrigins = [
-  "https://howtoai.tech",
-  "https://cheery-froyo-1807de.netlify.app",
-  "https://howtoai.tech/tools/free-batch-generation-of-pictures-and-text",
-  "http://localhost:3000",
-  "http://howtotech.ai",
-];
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-    optionsSuccessStatus: 204,
-  })
-);
-
-app.options("/proxy/chat", (req, res) => {
-  res.set("Access-Control-Allow-Origin", "https://howtoai.tech");
-  res.status(204).end();
-});
 
 app.post("/proxy/chat", (req, res) => {
   res.set("Access-Control-Allow-Origin", "https://howtoai.tech");
